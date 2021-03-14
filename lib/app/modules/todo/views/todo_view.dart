@@ -32,6 +32,7 @@ class TodoView extends StatelessWidget {
                   SearchAndFilter(),
                   Obx(() {
                     final currentTodos = FilteredTodos.to.filteredTodos;
+
                     return ListView.separated(
                       primary: false,
                       shrinkWrap: true,
@@ -62,9 +63,7 @@ class TodoView extends StatelessWidget {
                               ],
                             );
                           },
-                          // child: TodoItem(todo: currentTodos[i]),
-                          child: TodoItem(index: i),
-                          // child: Container(),
+                          child: TodoItem(todo: currentTodos[i]),
                         );
                       },
                       separatorBuilder: (context, i) => Divider(
@@ -181,11 +180,10 @@ class FilterButton extends StatelessWidget {
   }
 }
 
-
 class TodoItem extends StatefulWidget {
-  final int index;
+  final Todo todo;
 
-  const TodoItem({Key? key, required this.index}) : super(key: key);
+  const TodoItem({Key? key, required this.todo}) : super(key: key);
 
   @override
   _TodoItemState createState() => _TodoItemState();
@@ -228,10 +226,9 @@ class _TodoItemState extends State<TodoItem> {
         focusNode: itemFocusNode,
         onFocusChange: (value) {
           if (value) {
-            textEditingController.text = Todos.to.todos[widget.index].text;
+            textEditingController.text = widget.todo.text;
           } else {
-            Todos.to.editTodo(widget.index, textEditingController.text);
-            // Todos.to.editTodo(widget.todo.id, textEditingController.text);
+            Todos.to.editTodo(widget.todo.id, textEditingController.text);
           }
         },
         child: ListTile(
@@ -239,97 +236,20 @@ class _TodoItemState extends State<TodoItem> {
             requestFocus();
           },
           leading: Checkbox(
-            value: Todos.to.todos[widget.index].completed,
+            value: widget.todo.completed,
             onChanged: (value) {
-              Todos.to.toggleTodo(widget.index);
+              Todos.to.toggleTodo(widget.todo.id);
             },
           ),
           title: itemFocusNode.hasFocus
               ? TextField(
-            controller: textEditingController,
-            autofocus: true,
-            focusNode: textFieldFocusNode,
-          )
-              : Text(Todos.to.todos[widget.index].text),
+                  controller: textEditingController,
+                  autofocus: true,
+                  focusNode: textFieldFocusNode,
+                )
+              : Text(widget.todo.text),
         ),
       ),
     );
   }
 }
-
-//
-//
-//
-// class TodoItem extends StatefulWidget {
-//   final Todo todo;
-//
-//   const TodoItem({Key? key, required this.todo}) : super(key: key);
-//
-//   @override
-//   _TodoItemState createState() => _TodoItemState();
-// }
-//
-// class _TodoItemState extends State<TodoItem> {
-//   late FocusNode itemFocusNode;
-//   late FocusNode textFieldFocusNode;
-//   late TextEditingController textEditingController;
-//
-//   @override
-//   void initState() {
-//     itemFocusNode = FocusNode();
-//     textFieldFocusNode = FocusNode();
-//     textEditingController = TextEditingController();
-//
-//     super.initState();
-//   }
-//
-//   void requestFocus() {
-//     setState(() {
-//       itemFocusNode.requestFocus();
-//       textFieldFocusNode.requestFocus();
-//     });
-//   }
-//
-//   @override
-//   void dispose() {
-//     itemFocusNode.dispose();
-//     textFieldFocusNode.dispose();
-//     textEditingController.dispose();
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
-//       child: Focus(
-//         focusNode: itemFocusNode,
-//         onFocusChange: (value) {
-//           if (value) {
-//             textEditingController.text = widget.todo.text;
-//           } else {
-//             Todos.to.editTodo(widget.todo.id, textEditingController.text);
-//           }
-//         },
-//         child: ListTile(
-//           onTap: () {
-//             requestFocus();
-//           },
-//           leading: Checkbox(
-//             value: widget.todo.completed,
-//             onChanged: (value) {
-//               Todos.to.toggleTodo(widget.todo);
-//             },
-//           ),
-//           title: itemFocusNode.hasFocus
-//               ? TextField(
-//                   controller: textEditingController,
-//                   autofocus: true,
-//                   focusNode: textFieldFocusNode,
-//                 )
-//               : Text(widget.todo.text),
-//         ),
-//       ),
-//     );
-//   }
-// }

@@ -30,12 +30,11 @@ class TodosSearch extends GetxController {
 }
 
 class Todos extends GetxController {
-  var todos = <Todo>[
+  RxList<Todo> todos = <Todo>[
     Todo(id: '1', text: 'Build todo app'),
     Todo(id: '2', text: 'Do homework'),
-    Todo(id: '3', text: 'Wash the dish')
+    Todo(id: '3', text: 'Wash the dish do')
   ].obs;
-
 
   static Todos get to => Get.find();
 
@@ -47,16 +46,22 @@ class Todos extends GetxController {
     todos.assignAll(todos.where((t) => t.id != todo.id).toList());
   }
 
-  void toggleTodo(int index) {
-    var changed = todos[index];
-    changed.completed = !changed.completed;
-    todos[index] = changed;
+  void toggleTodo(String id) {
+    final index = todos.indexWhere((todo) => todo.id == id);
+    if (index > -1) {
+      var changed = todos[index];
+      changed.completed = !changed.completed;
+      todos[index] = changed;
+    }
   }
 
-  void editTodo(int index, String desc) {
-    var changed = todos[index];
-    changed.text = desc;
-    todos[index] = changed;
+  void editTodo(String id, String desc) {
+    final index = todos.indexWhere((todo) => todo.id == id);
+    if (index > -1) {
+      var changed = todos[index];
+      changed.text = desc;
+      todos[index] = changed;
+    }
   }
 }
 
@@ -114,10 +119,15 @@ class FilteredTodos extends GetxController {
       }
 
       if (search.value!.isNotEmpty) {
+        print(search.value);
         tempTodos =
             tempTodos.where((t) => t.text.contains(search.value!)).toList();
       }
+      // print(tempTodos.where((t) => t.text.contains(search.value!)).toList());
+      // print(tempTodos);
+
       filteredTodos.assignAll(tempTodos);
+      // print(filteredTodos);
     });
 
     super.onInit();
@@ -155,4 +165,3 @@ class TestCreate extends GetxController {
 
   static TestCreate get to => Get.find();
 }
-
